@@ -1,0 +1,119 @@
+\section{Réalisation}
+\label{sec:impl}
+
+\paragraph{Chapeau:} Nous avons présenté les spécifications du projet dans la section \ref{sec:specification}. Dans cette section, nous détaillons la conception de notre logiciel et les techniques informatiques utilisées.
+\subsection{Modélisation UML}
+\fig{images/finale.png}{18cm}{7cm}{Diagramme UML des classes de données}{UML}
+
+\subsection{Conception détaillée}
+
+\subsubsection{Génération de la grille}
+\fig{images/Box.png}{10cm}{5cm}{UML-Terrain}{Box}
+\begin{itemize}
+\item Fabriquation des éléments de la grille : les différentes sources de nourriture et les obstacles sont crées par la classe "BoxFactory" : design pattern "Simple factory".
+\item Pour faciliter la gestion des différents types de cases, on a mis en place le design pattern "Bridge".
+\item L'objet de type "Grille" est relativement complexe. On a consacré une classe entière : "GridBuilder" pour le construire, en séparant sa construction de sa représentation: utilisation de design pattern "Builder".
+\item Pour générer la grille, on a créé d'abord un tableau à 2 dimensions, dans lequel on a placé les objets représentons les éléments de la grille : le sol, les murs au 4 cotés de la grille. Ensuite, on a placé aléatoirement les obstacles en laissant une certaine distance entre eux. Enfin, on a placé les sources de nourriture et les souris dans les cases libres (ne contenant pas un obstacle). 
+\end{itemize}
+
+\subsubsection{Les souris}
+\fig{images/sourisUml.png}{10cm}{5cm}{UML-Souirs}{SouirsUml}
+\begin{itemize}
+\item Création : Afin de centraliser la création des objets de type "Souris" dans un seul endroit du projet, on a utilisé le design pattern "Simple Factory".
+\item Comportement : Pour assurer une certaine souplesse dans la gestion des comportements des souris, on a utilisé 2 classes abstraites "Mouse" et "Behavior" : mise en place de design pattern "Bridge".
+\item Mémoire: On a créé une classe "Memory" dont les attributs sont principalement des "ArrayList" permettant de stocker les positions des obstacles rencontrés par la souris, et des sources de nourriture qu'elle a déjà consomées, ainsi que les événements de sa carrière. 
+\item Vision : On a créé une classe "Vision" dans laquelle on a mis en place une méthode qui parcourt juste la matrice de cases qui se situent à une distance précise autour de la souris, puis elle stocke les positions des obstacles et des sources de nourriture dans deux  
+"ArrayList<Point>" différentes, qui seront ensuite stockées au niveau de la mémoire de la souris.
+\item Déplacement : Pour gérer le déplacement des souris, on a créé une classe "Direction" , qui est une classe d'énumération, elle définie 4 constantes de déplacement de type "String" : Up,Down,Right,Left. Ensuite, au  niveau de la classe "Souris" on a mis en place un attribut de type "Direction", et pour déplacer une souris, il suffit de changer la valeur de cette attribut.
+\item Pour dériger une souris vers une source de nourriture, on calcule d'abord par la règle de "Pythagore" la distance entre la souris en question et toutes les sources de nourritures stockées dans sa mémoire. Ensuite, pour trouver le bon chemin, on utilise notre algorithme qui traite les différents cas de l'emplacement de la souris par rapport à la source de nourriture la plus proche. La souris peut se situer dans 8 positions différentes par rapport à la source de nourriture, et pour chaque cas, on applique un traitement bien précis:
+\begin{enumerate}
+\item Nord-Est : la souris se dirige à gauche, si elle trouve un obstacle elle se dirige en haut.
+\item Nord-Ouest : la souris se dirige en bas, si elle trouve un obstacle elle se dirige à gauche.
+\item Sud-Est : la souris se dirige en haut, si elle trouve un obstacle elle se dirige à droite.
+\item Sud-Ouest : la souris se dirige à droite, si elle trouve un obstacle elle se dirige en bas.
+\item Nord : la souris se dirige en bas, si elle trouve un obstacle elle se dirige à gauche.
+\item Ouest : la souris se dirige à droite, si elle trouve un obstacle elle se dirige en bas.
+\item Sud : la souris se dirige en haut, si elle trouve un obstacle elle se dirige à droite.
+\item Est : la souris se dirige à gauche ,si elle trouve un obstacle elle se dirige en haut.
+\end{enumerate}
+\item Communication:
+\begin{enumerate}
+\item Pour réaliser cette partie on a utilisé le design pattern "Template method", en définissant la squelette d'un algorithme qui nous sera utile pour la diffusion des informations, c'est à dire une opération en différentes étapes pour les sous-classes, ceci permet à ces dernier de redéfinir certaines étapes de cet algorithme.
+\item Les souris ont une variable d'instance qui varie entre 0 et 10, il va représenter le degré de sa confiance. Si ce paramètre est > à 5 alors la souris est coopérative. Sinon elle sera égoïste.
+\item Ce paramètre varie au cours de la simulation si une souris reçoit une information erronée, on décrémente.Sinon, si elle reçoit une information correcte, on l'incrémente.
+
+\item Reproduction: pour simuler la grossesse d'une souris on lui associe un attribut qui va représenter le temps de la grossesse. Si une souris est enceinte, on décrément le temps de la grossesse, et si il atteins 0 ,a souris se duplique.
+\end{enumerate}
+\end{itemize}
+
+\subsubsection{Déroulement de la simulation}
+\begin{itemize}
+\item La classe "Simulation" a été créée pour gérer le moteur de jeu, elle permet de manipuler les objet qui ont une certain action à réaliser (Nourriture, Souris ... etc). Pour cela, l'ensemble de ces objet est stocké dans des ArrayList, pour faciliter leur manipulation.
+\item Au commencement, la simulation est instanciée et la génération de la grille est lancée. La boucle de simulation se lance alors, le compteur de tours est incrémenté.
+\item notre moteur de jeu consiste à parcourir ces ArrayList est associée à chaque objet une action a effectuée.
+\item Les souris agissent une par une selon leurs environnement et leurs comportement comme il est indiquer dans section \ref{sec:specification}.
+\item Les souris venant de mourir quittent la grille en changeant de direction vers le haut jusqu’à ce qu'elles dépassent le mur, puis on la supprime de la grille. Parcontre les souris venant de naître sont ajoutées à la grille avec une taille plus petite que les autres. 
+\item Pour générer les sources de nourriture on décrémente le compteur de génération de la nourriture. Si le compteur vaut zéro, des sources de nourriture plus ou moins importantes apparaissent sur la grille en fonction du tour de jeu. Le compteur revient à la valeur initiale qui a été sélectionnée par l'utilisateur au début voir Figure \ref{fig:SPM}', une fois la source de nourriture est totalement consommée par les souris ou bien si son temps est expiré la source sera supprimée de la grille.
+\item Les valeurs statistiques sont chargées puis on boucle afin de revenir à l'incrémentation du nombre de tours. 
+
+\end{itemize}
+
+\begin{center}
+\tikzset{
+    %Define standard arrow tip
+    >=stealth',
+    %Define style for boxes
+    punkt/.style={
+           rectangle,
+           rounded corners,
+           draw=black, very thick,
+           text width=6.5em,
+           minimum height=2em,
+           text centered},
+    % Define arrow style
+    pil/.style={
+           ->,
+           thick,
+           shorten <=2pt,
+           shorten >=2pt,}
+}
+
+\begin{tikzpicture}[node distance=1cm, auto,]
+ %nodes
+ \node[punkt] (stats) {Statistiques};
+ \node[punkt, inner sep=5pt,below=0.5cm of stats]
+ (sim) {Simulation};
+ % We make a dummy figure to make everything look nice.
+ \node[above=of stats] (dummy) {};
+ \node[right=of dummy] (t) {Souris}
+   edge[pil,bend left=45] (stats.east) % edges are used to connect two nodes
+   edge[pil, bend left=45] (sim.east); % .east since we want
+                                             % consistent style
+ \node[left=of dummy] (g) {Nourriture}
+   edge[pil, bend right=45] (stats.west)
+   edge[pil, bend right=45] (sim.west)
+   edge[pil,<->, bend left=45] node[auto] {Génération de la Grille} (t);
+\end{tikzpicture}
+
+\vspace{1em}
+\emph{Déroulement de la simulation et statistiques}
+\end{center}
+
+\subsubsection{Statistiques}
+	Pour stocker toutes les statistiques de la simulation, on a créé une classe "Statistics" ayant une seule instance: design pattern singleton. Les valeurs statistiques sont stockées dans les variables de cette instance, elles sont mises à jours à chaque tour de jeu. La visualisation de ces statistiques est effectuée à l'aide de la librairie "JFreeChart".
+\subsubsection{Système de journal}
+\paragraph{}Ce système permet à une souris de raconter sa vie de la naissance jusqu'à la mort.Il est réalisé en plusieurs étapes, sous forme graphique avec des animations.
+\paragraph{Enregistrement des événements:} On a créé une classe "MouseEvent" ayant uniquement 2 attributs de type String, l'un contient une description de l'événement: (ex: à quel tour de jeu,dans quelle case,quelle souris...etc), l'autre contient le nom de l'image associée à l'événement (exp: "walk.png","eat.png"...etc). Dans la mémoire de chaque souris, une "ArrayList<MouseEvent>" est mise en place. À chaque action effectuée par la souris, un objet de type "MouseEvent" est créé puis stocké dans cette "ArrayList<MouseEvent>".
+
+\paragraph{Réalisation de l'animation et synchronisation:}En implémentant l'interface "Runnable", On a créé deux "Threads" différents. Le premier, parcours lentement une "ArrayList<MouseEvent>", et à chaque itération, il indique au deuxième "Thread" le texte et les images correspondantes à l'événement en question, qui doivent alors être affichées, puis il se met en pause pendant un certain temps. Pendant ce temps, le deuxième "Thread" dessine les images dans un "JPanel", avec une grande vitesse en changeant leurs coordonnées d'une manière très précise afin d'avoir une animation cohérente.
+\fig{images/storyuml.png}{10cm}{5cm}{UML-Système de journal}{journal}
+
+\subsection{Fonctionnalités supplémentaires}
+\begin{itemize}
+\item Choix de l'environnement d'évolution des souris: désert, neige, forêt.
+\item Affichage de l'historique de la simulation en temps réel.
+\item Modification manuelle des cases de la grille.
+\item Prise de contrôle d'une souris.
+\item Affichage de champ de vision  d'une souris.
+\item Utilisation des testes unitaires automatisés (JUnit) ainsi qu'un système de log (Log4j).
+\end{itemize}

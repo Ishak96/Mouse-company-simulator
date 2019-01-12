@@ -1,0 +1,83 @@
+%%Définir le format du document: papier, taille de police, type de document, etc.
+
+\documentclass[11pt, french]{article}
+% * <hachoudrassem@gmail.com> 2018-03-31T14:02:35.858Z:
+%
+% ^.
+%%%%%%%%%% Packages externes utilisés %%%%%%%%%%%%%%%%%%%
+\usepackage[french]{babel}
+\selectlanguage{french}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{macro}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{tikz}
+\usepackage{smartdiagram}
+\usepackage[utf8]{inputenc}
+\usepackage{fourier}
+\newcommand{\daywidth}{2.2 cm}
+\usetikzlibrary[positioning]
+\usetikzlibrary{patterns}
+\usepackage[french]{babel}
+\usetikzlibrary{arrows,shapes,positioning,shadows,trees}
+
+\tikzset{
+  basic/.style  = {draw, text width=2cm, drop shadow, font=\sffamily, rectangle},
+  root/.style   = {basic, rounded corners=2pt, thin, align=center,
+                   fill=blue!30},
+  level 2/.style = {basic, rounded corners=6pt, thin,align=center, fill=blue!40,
+                   text width=9em},
+  level 3/.style = {basic, thin, align=left, fill=gray!30, text width=7.3em}
+}
+\usetikzlibrary{arrows,positioning}
+%\usepackage{algorithm2e}
+
+
+%La mise en page du rapport, NE PAS MODIFIER.
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ left=20mm,
+ right=20mm,
+ top=20mm,
+ bottom=20mm,
+ }
+
+%%%%%%%%% Le corps du document entre begin et end %%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+%Page de garde
+\input{titre.tex}
+
+%Génération automatique de la table des matières, de la liste des figures et de la liste des tableaux
+\tableofcontents
+\clearpage
+\listoffigures
+
+%Une section "remerciements" pourrait être intéressante. C'est une section non numéroté (avec un * )
+
+\section*{Remerciements}
+Avant tout développement de ce projet,  il apparaît opportun d'addresser nos remirciements à tout ceux qui nous ont aidé pour la réalisation de ce projet. Nous tenons à remercier en premier lieu Monsieur Tianxiao Liu, notre encadrant lors de ce projet, auprés duquel nous avons pu bénéficier d'un grand soutien. Nous remercions également Monsieur Irenee Briquel pour son aide à la réalisation de ce document.
+
+\clearpage
+\input{introduction.tex}
+\clearpage
+\input{specification.tex}
+\clearpage
+\input{realisation.tex}
+\clearpage
+\input{manuel.tex}
+\clearpage
+\input{deroulement.tex}
+\clearpage
+\input{conclusion.tex}
+
+%Références bibliographiques du document
+%\bibliographystyle{plain}
+%\bibliography{bibliographies}
+%\nocite{*}
+\end{document}

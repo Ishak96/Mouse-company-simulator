@@ -1,0 +1,69 @@
+\section{Spécification}
+\label{sec:specification}
+
+\paragraph{Chapeau:}Nous avons présenté l'objectif du projet dans la section \ref{sec:introduction}. Dans cette section, nous présentons la spécification de notre logiciel réalisé. Ceci correspond principalement au cahier des charges.
+
+\subsection{Environnement d'évolution des souris}
+\label{sec:environnement}
+
+\paragraph{}Dans ce jeu, les souris évoluent sur une grille complexe, sur laquelle sont disposés plusieurs obstacles et diverses sources de nourriture. Cette grille est générée aléatoirement suivant certains paramètres donnés par l'utilisateur qui doit avoir un certain contrôle sur le déroulement de la simulation.
+\fig{images/Terrain.png}{5cm}{1cm}{Terrains}{TRN}
+
+\subsubsection{Les obstacles}
+\paragraph{} Ils sont positionés aléatoirement sur la grille, avec la densité choisie par l’utilisateur. Ils empêchent les souris de se déplacer librement sur la grille. De plus, ils varient selon l'environnement: forêt, désert ou neige.
+\fig{images/obstacleGrass.png}{7cm}{3cm}{Obstacles-Forêt}{OF}
+\fig{images/obstacleDesert.png}{7cm}{1cm}{Obstacles-Désert}{OD}
+\fig{images/obstacleSnow.png}{7cm}{1cm}{Obstacles-Neige}{ON}
+
+\subsubsection{Les sources de nourriture}
+\paragraph{} Elles apparaissent aléatoirement et spontanément au cours du temps sur la grille. Chaque source est composée de quelques unités de nourriture (quantité limitée), et chaque unité permet à une souris de survivre pendant un certain nombre de tours de jeu. Il est bien évident que plus une source de nourriture sera utilisée par les souris, plus elle s'épuisera vite.
+\fig{images/Food.png}{4cm}{2em}{Nourriture}{NR}
+
+\subsection{Caractéristiques et comportements des souris}
+\label{sec:caractéristiques}
+
+\subsubsection{Recherche de la nourriture}
+\paragraph{} Les souris se déplacent sur la grille case par case, à la recherche des sources de nourriture. Au delà d'un cetrain temps bien déterminé, si une souris n'a pas mangé, elle meurt. Les sources de nourriture n'étant pas inépuisables, il est vital pour les souris d'explorer régulièrement la grille afin de trouver d'autres sources de nourriture, et de veiller au cours de leur exploration d'être toujours à portée d'un point de nourriture connu afin d'y retourner s'il le faut.
+
+\subsubsection{Mémoire et champ de vision}
+\paragraph{} Les souris ont une vision limitée à quelques cases autour d’elles mais ont une excellente mémoire, elles se souviennent du chemin qu’elles ont parcouru, l’emplacement des sources de nourriture et des obstacles trouvés, ainsi que les souris rencontrées et les informations échangées.
+
+\subsubsection{Communication}
+\paragraph{} Quand deux souris se rencontrent sur la même case ou sur deux cases adjacentes, elles peuvent communiquer leurs connaissances à propos de l'emplacement des sources de nourriture. Cela dépend de la mémoire des souris et leurs comportement, comme ce qui est illustré dans le tableau ci-dessous.D'autre part, si une souris reçoit plusieurs fois des informations éronnées de la part des autres, elle peut changer son comportement (réceptive devient nihiliste, cooperative devient égoïste).
+
+\begin{center}
+%\centering
+\begin{tabular} {|p{2.5cm}|p{6cm}|p{7.2cm}|}
+\hline
+Comportemnts & Réceptive & Nihiliste \\
+\hline
+Coopérative & donne / reçoit les informations & donne / ne
+reçoit pas les
+informations\\
+\hline
+Égoïste & ne donne pas / reçoit les
+informations & ne donne pas / ne reçoit pas les informations\\
+\hline
+\end{tabular}
+%\caption{tab:Comportements des souris et communication}
+%\label{tab:document}
+\end{center}
+ 
+\fig{images/mouseCooperative.png}{6cm}{1cm}{Souris coopérative}{COO}
+\fig{images/mouseSelfish.png}{6cm}{1cm}{Souris égoïste}{EGO}
+
+\subsubsection{Reproduction}
+\label{subsubsec:rep}
+\paragraph{} Une souris bien nourrie pendant un certain nombre de tours de jeu donne naissance à une autre souris de comportement identique.
+\begin{itemize}
+\item Reproduction sexuée: quand deux souris de sexe opposé se rencontrent sur la même case ou sur deux cases adjacentes.
+\item Reproduction asexuée: dupliccation sans besoin de partenaire.
+\end{itemize}
+
+\subsection{Exigences}
+\begin{itemize}
+	\item Permettre à l’utilisateur d’entrer un ensemble de paramètres pour initialiser la grille: (densités des obstacles, fréquence d'apparition de la nourriture et quantité, nombre de souris), et d'exécuter tour par tour la mise à jour de la grille (action des souris, apparition/épuisement des gisements de nourritures).
+	\item Permettre à l'utilisateur de régler plus finement le comportement des souris (degré de coopération et degré de confiance en fonction de la taille et du nombre de gisement de nourriture, de sa propre faim, du nombre de fois où elle a été induite en erreur...etc).
+    \item Permettre la simulation afin de montrer l'évolution de la population au fil des reproductions, en affichant les informations statistiques.
+    \item Ajouter un système de journal à la première personne, une souris va raconter sa vie : de la naissance au décès, les échanges, les enfants, et toutes les activités réalisées. Ce journal doit être dynamique ou sous forme graphique avec des animations.
+\end{itemize}
